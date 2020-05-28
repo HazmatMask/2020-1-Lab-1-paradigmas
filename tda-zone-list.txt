@@ -6,7 +6,11 @@
 ;TDA: ZONA DE TRABAJO
 ;ESTRUCTURA BASE:
 ; LISTA-DE-COMANDOS WORKSPACE  INDEX  LOCAL-REP. REMOTE-REP)
-; ((STRING, STRING...) ZONA    ZONA    ZONA       ZONA)      
+; ((STRING, STRING...) ZONA    ZONA    ZONA       ZONA)
+
+;CONSTRUCTOR:
+
+(define create_zone_list (lambda (K W I L R) (list K W I L R)))
 
 ;PERTENENCIA:
 
@@ -38,14 +42,5 @@
 (define get_remote_repository (lambda (Q) (cadddr (cdr Q))))
 
 ;MODIFICADORES:
-
-;MOVER LISTA DE COMMITS:
-
-(define move_commit_list (lambda (Z1 Z2)
-                           (if (equal? ))))
-
-;BORRAR LISTA DE COMMITS POR NOMBRE:
-
-(define delete-zone (lambda (N Z) (list N null)))
 
 (provide (all-defined-out))

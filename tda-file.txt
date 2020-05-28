@@ -1,0 +1,29 @@
+#lang racket
+;TDA: ARCHIVO
+;ESTRUCTURA BASE:
+;  NOMBRE, CONTENIDO.
+; (STRING, STRING)
+
+;CONSTRUCTORES:
+
+(define create_file (lambda (N F) (list N F)))
+
+;PERTENENCIA:
+
+(define file? (lambda (C)
+                  (if (and
+                       (string? (car C))
+                       (string? (cadr C))
+                       (null? (cddr C)))
+                      #t
+                      #f)))
+
+;SELECTORES:
+
+;SELECCIONAR NOMBRE DEL ARCHIVO:
+(define get_filename (lambda (C) (car C)))
+
+;SELECCIONAR CONTENIDO DEL ARCHIVO:
+(define get_file_content (lambda (C) (cadr C)))
+
+(provide (all-defined-out))

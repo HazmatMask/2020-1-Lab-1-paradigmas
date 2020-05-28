@@ -1,5 +1,6 @@
 #lang racket
 (require "tda-commit.rkt")
+(require "tda-file.rkt")
 ;TDA: LISTA DE COMMIT
 ;ESTRUCTURA BASE:
 ; LISTA DE COMMITS
@@ -39,7 +40,7 @@
 (define find_commit_by_filename (lambda (N L)                       
                               (if (null? L)
                                   L
-                                  (if (equal? N (get_commit_filename (car L)))
+                                  (if (equal? N (get_filename (get_commit_file (car L))))
                                       (cons (car L) (find_commit_by_filename N (cdr L)))
                                       (find_commit_by_filename N (cdr L))))))
 
@@ -58,5 +59,6 @@
                             (if (equal? C (car L))
                                 (cdr L)
                                 (cons (car L) (delete_commit C (cdr L)))))))
+
 
 (provide (all-defined-out))

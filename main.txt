@@ -1,0 +1,27 @@
+#lang racket
+(require "tda-commit.rkt")
+(require "tda-commit-list.rkt")
+(require "tda-zone.rkt")
+(require "tda-command-list.rkt")
+(require "tda-zone-list.rkt")
+(require "pull.rkt")
+
+;GIT
+
+
+
+;PULL
+
+(define pull (lambda (Q)
+               (create_zone_list
+                (get_command_list Q)
+                (merge_lists_commits
+                 (extract_unique_commits
+                  (get_commit_list (get_remote_repository Q))
+                  (get_commit_list (get_workspace Q))) (get_commit_list (get_workspace Q)))
+                (get_index Q)
+                (get_local_repository Q)
+                (get_remote_repository Q))))
+
+;PUSH
+

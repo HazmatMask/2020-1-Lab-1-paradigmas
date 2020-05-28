@@ -19,9 +19,13 @@
 
 ;SELECTORES:
 
+;EXTRAER NOMBRE DE ZONA DE TRABAJO:
+
+(define get_zone_name (lambda (Z) (car Z)))
+
 ;EXTRAER LISTA DE ZONA DE TRABAJO:
 
-(define get_commit_list (lambda (Z) (cdr Z)))
+(define get_commit_list (lambda (Z) (cadr Z)))
 
 ;MODIFICADORES:
 

@@ -1,0 +1,27 @@
+#lang racket
+;PULL
+
+;DETERMINAR ELEMENTOS UNICOS
+
+(define recursive_unique_commits (lambda (L1 L2 L3)
+                                 (if (null? L1)
+                                     '()
+                                     (if (null? L2)
+                                         (cons (car L1) (recursive_unique_commits (cdr L1) L3 L3))
+                                         (if (equal? (car L1) (car L2))
+                                             (recursive_unique_commits (cdr L1) L3 L3)
+                                             (recursive_unique_commits L1 (cdr L2) L3))))))
+
+(define extract_unique_commits (lambda (L1 L2) (recursive_unique_commits L1 L2 L2)))
+
+
+;MEZCLAR LISTAS
+
+(define merge_lists_commits (lambda (L1 LC)
+                              (if (null? (cdr LC))
+                                  (cons (car LC) L1)
+                                  (merge_lists_commits (cons (car LC) L1) (cdr LC)))))
+
+(provide (all-defined-out))
+
+;INTERNAL PULL

@@ -1,12 +1,13 @@
 #lang racket
+(require "tda-file.rkt")
 ;TDA: COMMIT
 ;ESTRUCTURA BASE:
-;  NOMBRE, FECHA, CREADOR, ARCHIVO.
-; (STRING, STRING, STRING, STRING.)
+;  NOMBRE, FECHA, ARCHIVO.
+; (STRING, STRING, ARCHIVO.)
 
 ;CONSTRUCTORES:
 
-(define create_commit (lambda (C D N F) (list C D N F)))
+(define create_commit (lambda (C D F) (list C D F)))
 
 ;PERTENENCIA:
 
@@ -15,8 +16,7 @@
                        (string? (car C))
                        (string? (cadr C))
                        (string? (caddr C))
-                       (string? (cadddr C))
-                       (null? (cddddr C)))
+                       (null? (cdddr C)))
                       #t
                       #f)))
 
@@ -28,10 +28,7 @@
 ;SELECCIONAR FECHA DEL COMMIT:
 (define get_commit_date (lambda (C) (cadr C)))
 
-;SELECCIONAR NOMBRE DEL ARCHIVO:
-(define get_commit_filename (lambda (C) (caddr C)))
-
-;SELECCIONAR CONTENIDO DEL ARCHIVO:
-(define get_commit_file (lambda (C) (cadddr C)))
+;SELECCIONAR ARCHIVO DEL COMMIT:
+(define get_commit_file (lambda (C) (caddr C)))
 
 (provide (all-defined-out))
