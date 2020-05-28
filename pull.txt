@@ -1,5 +1,35 @@
 #lang racket
-;PULL
+(require "tda-commit.rkt")
+;PULL+ADD
+
+;DETERMINAR ARCHIVOS MODIFICADOS O NUEVOS
+
+(define recursive_modified_commits (lambda (L1 L2 L3 LF)
+                                     (if (null? L1)
+                                         LF
+                                         (if (null? L2)
+                                             (recursive_modified_commits (cdr L1) L3 L3 (cons (car L1) LF))
+                                             (if (equal? (car L1) (car L2))
+                                                 (recursive_modified_commits (cdr L1) L3 L3 LF)
+                                                 (if  (and (equal? (get_commit_filename (car L1)) (get_commit_filename (car L2)))
+                                                           (not (equal? (get_commit_content (car L1)) (get_commit_content (car L2)))))
+                                                      (recursive_modified_commits (cdr L1) L3 L3 (cons (car L1) LF))                                             
+                                                      (recursive_modified_commits L1 (cdr L2) L3 LF)))))))
+
+(define extract_modified_commits (lambda (L1 L2) (recursive_modified_commits L1 L2 L2 '())))
+
+;ELIMINAR ELEMENTOS MODIFICADOS
+
+(define recursive_delete_modified_commits (lambda (L1 L2 L3 LF)
+                                            (if (null? L1)
+                                                LF
+                                                (if (null? L2)
+                                                    (recursive_delete_modified_commits L1 L2 L3 (cons (car L1) LF))
+                                                    (if  (equal? (get_commit_filename (car L1)) (get_commit_filename (car L2)))
+                                                         (recursive_delete_modified_commits (cdr L1) L3 L3 LF)                                          
+                                                         (recursive_delete_modified_commits L1 (cdr L2) L3 LF))))))
+
+(define delete_modified_commits (lambda (L1 L2) (recursive_delete_modified_commits L1 L2 L2 '())))
 
 ;DETERMINAR ELEMENTOS UNICOS
 

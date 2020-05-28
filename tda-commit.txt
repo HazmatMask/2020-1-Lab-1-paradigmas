@@ -1,3 +1,4 @@
+
 #lang racket
 (require "tda-file.rkt")
 ;TDA: COMMIT
@@ -30,5 +31,13 @@
 
 ;SELECCIONAR ARCHIVO DEL COMMIT:
 (define get_commit_file (lambda (C) (caddr C)))
+
+;SELECCIONAR NOMBRE DEL ARCHIVO DEL COMMIT:
+
+(define get_commit_filename (lambda (C) (get_filename (get_commit_file C))))
+
+;SELECCIONAR CONTENIDO DEL ARCHIVO DEL COMMIT:
+
+(define get_commit_content (lambda (C) (get_file_content (get_commit_file C))))
 
 (provide (all-defined-out))
