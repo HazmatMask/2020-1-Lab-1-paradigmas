@@ -16,12 +16,6 @@
                                 (command_list? (cdr K))
                                 #f))))
 
-;SELECTORES:
-
-;MOSTRAR ULTIMO COMANDO:
-
-(define show_last_command (lambda (K) (car K)))
-
 ;MODIFICADORES:
 
 ;AGREGAR NUEVO COMANDO:

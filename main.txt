@@ -8,15 +8,24 @@
 
 ;GIT
 
-
+(define git (lambda (C)
+              (if (equal? C "pull")
+                  (lambda (Q) (pull Q))
+                  (if (equal? C "add")
+                      (lambda (F) (pull F))
+                      (if (equal? C "commit")
+                          (lambda (MSG) (commit MSG))
+                          (if (equal? C "push")
+                              (lambda (Q) (push Q))
+                              null))))))
 
 ;PULL
 
 (define pull (lambda (Q)
                (create_zone_list
-                (get_command_list Q)
+                (add_command_to_list "pull" (get_command_list Q))
                 (create_zone
-                 "W"
+                 "WORKSPACE"
                  (merge_lists_commits
                   (extract_unique_commits
                    (get_commit_list (get_remote_repository Q))
@@ -33,10 +42,10 @@
                      (Q))
                    (lambda (Q)
                      (create_zone_list
-                      (get_command_list Q)
+                      (add_command_to_list "add" (get_command_list Q))
                       (get_workspace Q)
                       (create_zone
-                       "I"
+                       "INDEX"
                       (merge_lists_commits                       
                        (delete_modified_commits (get_commit_list (get_index Q)) L)
                        (extract_modified_commits
@@ -44,3 +53,39 @@
                        (get_commit_list (get_index Q)))))                     
                       (get_local_repository Q)
                       (get_remote_repository Q))))))
+
+;COMMIT
+
+(define commit (lambda (MSG)
+                 (lambda (Q)
+                   (create_zone_list
+                    (add_command_to_list "commit" (get_command_list Q))
+                    (get_workspace Q)
+                    (delete-zone-commit-list "INDEX")
+                    (create_zone
+                     "LOCAL REPOSITORY"
+                     (add_message_to_commits_list MSG (get_commit_list (get_index Q))))
+                    (get_remote_repository Q)))))
+
+;PUSH
+
+(define push (lambda (Q)
+               (create_zone_list
+                (add_command_to_list "push" (get_command_list Q))
+                (get_workspace Q)
+                (get_index Q)
+                (get_local_repository Q)
+                (create_zone
+                 "REMOTE REPOSITORY"
+                 (get_commit_list (get_local_repository Q))))))
+
+;ZONAS->STRING
+
+(define zonas->string (lambda (Q)
+                        (string-append "\n###LISTA DE COMANDOS UTILIZADOS###\n\n"
+                                       (list_of_commands->string (get_command_list Q) "") "\n"
+                                       (zone->string (get_workspace Q))
+                                       (zone->string (get_index Q))
+                                       (zone->string (get_local_repository Q))
+                                       (zone->string (get_remote_repository Q))
+                                       )))

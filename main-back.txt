@@ -1,5 +1,7 @@
 #lang racket
 (require "tda-commit.rkt")
+(require "tda-zone.rkt")
+
 ;PULL+ADD
 
 ;DETERMINAR ARCHIVOS MODIFICADOS O NUEVOS
@@ -54,4 +56,38 @@
 
 (provide (all-defined-out))
 
-;INTERNAL PULL
+;AGREGAR MENSAJE A LISTA DE COMMITS
+
+(define recursive_add_message_to_commit_list (lambda (MSG L LAUX)
+                                               (if (null? L)
+                                                   LAUX
+                                                   (recursive_add_message_to_commit_list MSG
+                                                                                         (cdr L)
+                                                                                         (cons ( modify_commit_message (car L) MSG) LAUX)))))
+
+(define add_message_to_commits_list (lambda (MSG L) (recursive_add_message_to_commit_list MSG L '())))
+
+;CREAR STRING DESDE COMMIT
+
+(define commit->string (lambda (C)
+                         (string-append "NOMBRE DE ARCHIVO: " (get_commit_filename C) "\nCREADO POR: " (get_commit_creator C)
+                                        "\nFECHA DE CREACION: " (get_commit_date C) "\nMENSAJE ASOCIADO: " (get_commit_message C)
+                                        "\n\nCONTENIDO DEL ARCHIVO:\n\n" (get_commit_content C) "\n\n- - - - - - - - -\n")))
+
+;CREAR STRING DESDE LISTA DE ZONA
+
+(define list_of_commits->string (lambda (L S_L)
+                                  (if (null? L)
+                                      S_L
+                                      (list_of_commits->string (cdr L) (string-append S_L (commit->string (car L)))))))
+
+;CREAR STRING DESDE ZONA
+
+(define zone->string (lambda (Z) (string-append "\n###" (get_zone_name Z) "###\n\n" (list_of_commits->string (get_commit_list Z) ""))))
+
+;CREAR STRING DESDE COMANDOS
+
+(define list_of_commands->string (lambda (K S_K)
+                                  (if (null? K)
+                                      (string-append S_K "\n- - - - - - - - -")
+                                      (list_of_commands->string (cdr K) (string-append S_K (car K) "\n")))))

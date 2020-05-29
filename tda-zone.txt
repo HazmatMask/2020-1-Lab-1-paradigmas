@@ -33,8 +33,8 @@
 
 (define copy_commit_list (lambda (N1 N2) (cons N2 (cdr))))
 
-;BORRAR LISTA DE COMMITS POR NOMBRE:
+;BORRAR LISTA DE COMMITS:
 
-(define delete-zone (lambda (N Z) (list N null)))
+(define delete-zone-commit-list (lambda (N) (list N null)))
 
 (provide (all-defined-out))

@@ -3,12 +3,12 @@
 (require "tda-file.rkt")
 ;TDA: COMMIT
 ;ESTRUCTURA BASE:
-;  NOMBRE, FECHA, ARCHIVO.
-; (STRING, STRING, ARCHIVO.)
+;  NOMBRE, FECHA, ARCHIVO, MENSAJE.
+; (STRING, STRING, ARCHIVO, STRING)
 
 ;CONSTRUCTORES:
 
-(define create_commit (lambda (C D F) (list C D F)))
+(define create_commit (lambda (C D F M) (list C D F M)))
 
 ;PERTENENCIA:
 
@@ -17,6 +17,7 @@
                        (string? (car C))
                        (string? (cadr C))
                        (string? (caddr C))
+                       (string? (cadddr C))
                        (null? (cdddr C)))
                       #t
                       #f)))
@@ -39,5 +40,20 @@
 ;SELECCIONAR CONTENIDO DEL ARCHIVO DEL COMMIT:
 
 (define get_commit_content (lambda (C) (get_file_content (get_commit_file C))))
+
+;SELECCIONAR MENSAJE ASOCIADO:
+
+(define get_commit_message (lambda (C) (cadddr C)))
+
+;MODIFICADORES:
+
+;MODIFICAR MENSAJE DE COMMIT:
+
+(define modify_commit_message (lambda (C MSG)
+                                (create_commit
+                                 (get_commit_creator C)
+                                 (get_commit_date C)
+                                 (get_commit_file C)
+                                 MSG)))
 
 (provide (all-defined-out))
