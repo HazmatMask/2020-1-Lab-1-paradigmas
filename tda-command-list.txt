@@ -1,6 +1,6 @@
 #lang racket
-(require "tda-commit.rkt")
-(require "tda-commit-list.rkt")
+(require "tda-commit.txt")
+(require "tda-commit-list.txt")
 
 ;TDA: ZONA DE TRABAJO
 ;ESTRUCTURA BASE:
@@ -8,6 +8,12 @@
 ; (STRING, STRING, STRING...))
 
 ;PERTENENCIA:
+
+;COMMAND_LIST?
+;DESCRIPCION: DETERMINA SI UN ELEMENTO CUENTA CON LA ESTRUCTURA
+ ; REQUERIDA PARA SER UNA LISTA DE COMANDOS
+;DOMINIO: STRINGS
+;RECORRIDO: LISTA DE COMANDOS
 
 (define command_list? (lambda (K)
                         (if (null? K)
@@ -18,7 +24,10 @@
 
 ;MODIFICADORES:
 
-;AGREGAR NUEVO COMANDO:
+;ADD_COMMAND_TO_LIST
+;DESCRIPCION: AÑADE COMANDOS A UNA LISTA YA CREADA
+;DOMINIO: LISTA DE COMANDOS X STRING
+;RECORRIDO: LISTA DE COMANDOS
 
 (define add_command_to_list (lambda (M K) (cons M K)))
 

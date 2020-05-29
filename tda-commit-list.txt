@@ -1,6 +1,6 @@
 #lang racket
-(require "tda-commit.rkt")
-(require "tda-file.rkt")
+(require "tda-commit.txt")
+(require "tda-file.txt")
 ;TDA: LISTA DE COMMIT
 ;ESTRUCTURA BASE:
 ; LISTA DE COMMITS
@@ -8,16 +8,29 @@
 
 ;PERTENENCIA:
 
+;COMMIT_LIST?
+;DESCRIPCION: DETERMINA SI UN ELEMENTO CORRESPONDE A UNA LISTA DE COMMITS
+;DOMINIO: ELEMENTO
+;RECORRIDO: BOOLEAN
+;RECURSION NATURAL
+
 (define commit_list? (lambda (L)
-                  (if (commit? car L)
-                      (if (null? cdr L)
-                          #t
-                          (commit_list? (cdr L)))
-                      #f)))
+                       (if (list? L)
+                           (if (null? L)
+                               #t
+                               (if (commit? (car L))
+                                   (commit_list? (cdr L))
+                                   #f))
+                           #f)))
 
 ;SELECTORES:
 
-;TRAER COMMIT POR CREADOR:
+;FIND_COMMIT_BY_CREATOR
+;DESCRIPCION: CREA UNA NUEVA LISTA CON TODOS LOS ELEMENTOS CUYO CREADOR CORRESPONDA
+ ; AL STRING INGRESADO
+;DOMINIO: STRING X LISTA DE COMMITS
+;RECORRIDO: LISTA DE COMMITS
+;RECURSION DE COLA.
 
 (define find_commit_by_creator (lambda (C L)                       
                               (if (null? L)
@@ -26,7 +39,12 @@
                                       (cons (car L) (find_commit_by_creator C (cdr L)))
                                       (find_commit_by_creator C (cdr L))))))
 
-;TRAER COMMIT POR FECHA:
+;FIND_COMMIT_BY_DATE
+;DESCRIPCION: CREA UNA NUEVA LISTA CON TODOS LOS ELEMENTOS CUYA FECHA DE CREACIÓN
+ ; CORRESPONDA AL STRING INGRESADO
+;DOMINIO: STRING X LISTA DE COMMITS
+;RECORRIDO: LISTA DE COMMITS
+;RECURSION DE COLA
 
 (define find_commit_by_date (lambda (D L)                       
                               (if (null? L)
@@ -35,7 +53,12 @@
                                       (cons (car L) (find_commit_by_date D (cdr L)))
                                       (find_commit_by_date D (cdr L))))))
 
-;TRAER COMMIT POR NOMBRE DE ARCHIVO:
+;FIND_COMMIT_BY_FILENAME
+;DESCRIPCION: CREA UNA NUEVA LISTA CON TODOS LOS ELEMENTOS CUYO NOMBRE DE ARCHIVO
+ ; CORRESPONDA AL STRING INGRESADO
+;DOMINIO: STRING X LISTA DE COMMITS
+;RECORRIDO: LISTA DE COMMITS
+;RECURSION DE COLA
 
 (define find_commit_by_filename (lambda (N L)                       
                               (if (null? L)
@@ -44,14 +67,20 @@
                                       (cons (car L) (find_commit_by_filename N (cdr L)))
                                       (find_commit_by_filename N (cdr L))))))
 
-
 ;MODIFICADORES:
 
-;AGREGAR COMMIT A LISTA:
+;ADD_COMMIT
+;DESCRIPCION: AGREGA UN COMMIT A LA LISTA DE COMMITS, AMBOS INGRESADOS COMO ARGUMENTO.
+;DOMINIO: COMMIT X LISTA DE COMMITS
+;RECORRIDO: LISTA DE COMMITS
 
 (define add_commit (lambda (C L) (cons C L)))
 
-;ELIMINAR COMMIT DE LISTA:
+;DELETE_COMMIT
+;DESCRIPCION: ELIMINA UN COMMIT DE UNA LISTA DE COMMITS, AMBOS INGRESADOS COMO ARGUMENTO
+;DOMINIO: STRING X LISTA DE COMMITS
+;RECORRIDO: LISTA DE COMMITS
+;RECURSION DE COLA
 
 (define delete_commit (lambda (C L)
                         (if (null? L)

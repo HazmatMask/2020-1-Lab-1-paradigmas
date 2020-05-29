@@ -1,8 +1,8 @@
 #lang racket
-(require "tda-commit.rkt")
-(require "tda-commit-list.rkt")
-(require "tda-zone.rkt")
-(require "tda-command-list.rkt")
+(require "tda-commit.txt")
+(require "tda-commit-list.txt")
+(require "tda-zone.txt")
+(require "tda-command-list.txt")
 ;TDA: ZONA DE TRABAJO
 ;ESTRUCTURA BASE:
 ; LISTA-DE-COMANDOS WORKSPACE  INDEX  LOCAL-REP. REMOTE-REP)
@@ -10,37 +10,65 @@
 
 ;CONSTRUCTOR:
 
+;CREATE_ZONE_LIST
+;DESCRIPCION: CREA UNA LISTA, CON PRIMER ELEMENTO
+;DOMINIO: ZONA
+;RECORRIDO: STRING
+
 (define create_zone_list (lambda (K W I L R) (list K W I L R)))
 
 ;PERTENENCIA:
 
+;ZONE_LIST?
+;DESCRIPCION: DETERMINA SI UN ELEMENTO CORRESPONDE A LA ESTRUCTURA DEL TDA LISTA DE ZONAS
+;DOMINIO: ELEMENTO
+;RECORRIDO: BOOLEANO
+
 (define zone_list? (lambda (Z)
-                  (if (and (command_list? (car Z)) (zone? (cadr Z)) (zone? (caddr Z)) (zone? (cadddr Z)) (zone? (cadddr (cdr Z))) (null? (cadddr (cddr Z))))
+                  (if (and (list? Z) (command_list? (car Z)) (zone? (cadr Z)) (zone? (caddr Z)) (zone? (cadddr Z)) (zone? (cadddr (cdr Z))) (null? (cadddr (cddr Z))))
                       #t
                       #f)))
 
 ;SELECTORES:
 
-;SELECCIONAR LISTA DE COMANDOS:
+;GET_COMMAND_LIST
+;DESCRIPCION: EXTRAE EL PRIMER ELEMENTO DE LA  QUE SE LE ENTREGA, CORRESPONDIENTE
+ ; A LA LISTA DE COMANDOS ASOCIADOS A LA LISTA DE ZONAS.
+;DOMINIO: LISTA DE ZONAS
+;RECORRIDO: LISTA DE COMANDOS
 
 (define get_command_list (lambda (Q) (car Q)))
 
-;SELECCIONAR ZONA DE WORKSPACE:
+;GET_WORKSPACE
+;DESCRIPCION: EXTRAE EL SEGUNDO ELEMENTO DE LA LISTA DE ZONAS QUE SE LE ENTREGA,
+ ; CORRESPONDIENTE A LA ZONA DENOMINADA "WORKSPACE".
+;DOMINIO: LISTA DE ZONAS
+;RECORRIDO: ZONA
 
 (define get_workspace (lambda (Q) (cadr Q)))
 
-;SELECCIONAR ZONA DE INDEX:
+;GET_INDEX
+;DESCRIPCION: EXTRAE EL TERCER ELEMENTO DE LA LISTA DE ZONAS QUE SE LE ENTREGA,
+ ; CORRESPONDIENTE A LA ZONA DENOMINADA "INDEX".
+;DOMINIO: LISTA DE ZONAS
+;RECORRIDO: ZONA
 
 (define get_index (lambda (Q) (caddr Q)))
 
-;SELECCIONAR ZONA DE LOCAL-REPOSITORY:
+;GET_LOCAL_REPOSITORY
+;DESCRIPCION: EXTRAE EL CUARTO ELEMENTO DE LA  QUE SE LE ENTREGA,
+ ; CORRESPONDIENTE A LA ZONA DENOMINADA "LOCAL REPOSITORY".
+;DOMINIO: LISTA DE ZONAS
+;RECORRIDO: ZONA
 
 (define get_local_repository (lambda (Q) (cadddr Q)))
 
-;SELECCIONAR ZONA DE REMOTE-REPOSITORY:
+;GET_REMOTE_REPOSITORY
+;DESCRIPCION: EXTRAE EL QUINTO ELEMENTO DE LA  QUE SE LE ENTREGA,
+ ; CORRESPONDIENTE A LA ZONA DENOMINADA "REMOTE REPOSITORY".
+;DOMINIO: LISTA DE ZONAS
+;RECORRIDO: ZONA
 
 (define get_remote_repository (lambda (Q) (cadddr (cdr Q))))
-
-;MODIFICADORES:
 
 (provide (all-defined-out))

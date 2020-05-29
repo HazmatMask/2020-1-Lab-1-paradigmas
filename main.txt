@@ -1,12 +1,20 @@
 #lang racket
-(require "tda-commit.rkt")
-(require "tda-commit-list.rkt")
-(require "tda-zone.rkt")
-(require "tda-command-list.rkt")
-(require "tda-zone-list.rkt")
-(require "pull.rkt")
+;REQUERIMIENTOS
+
+(require "tda-file.txt")
+(require "tda-commit.txt")
+(require "tda-commit-list.txt")
+(require "tda-zone.txt")
+(require "tda-command-list.txt")
+(require "tda-zone-list.txt")
+(require "main-back.txt")
 
 ;GIT
+;DESCRIPCION: DADO UN STRING, ENTREGA UN PROCESO CORRESPONDIENTE A LAS CUATRO FUNCIONES
+ ; PULL, ADD, COMMIT Y PUSH, A CONTINUACIÓN DEFINIDAS
+;DOMINIO: STRING
+;RECORRIDO: PROCESO
+;FUNCION CURRIFICADA
 
 (define git (lambda (C)
               (if (equal? C "pull")
@@ -20,6 +28,12 @@
                               null))))))
 
 ;PULL
+;DESCRIPCION: CREA UNA NUEVA LISTA DE ZONAS, AÑADIENDO UN COMANDO "PULL" A LA LISTA DE COMANDOS ASOCIADA,
+ ; Y MODIFICANDO LA ZONA "WORKSPACE" A UNA FUSIÓN DE LOS ELEMENTOS NUEVOS RESPECTO AL "REMOTE REPOSITORY",
+ ; ADEMÁS DE AQUELLOS QUE YA EXISTAN EN "WORKSPACE".
+;DOMINIO: LISTA DE ZONAS
+;RECORRIDO: LISTA DE ZONAS
+;RECURSION DE COLA, DEFINIDA EN "MAIN-BACK.TXT".
 
 (define pull (lambda (Q)
                (create_zone_list
@@ -35,6 +49,13 @@
                 (get_remote_repository Q))))
 
 ;ADD
+;DESCRIPCION: CREA UNA NUEVA LISTA DE ZONAS, AÑADIENDO UN COMANDO "ADD" A LA LISTA DE COMANDOS ASOCIADA,
+ ; Y MODIFICANDO LA ZONA "INDEX" A UNA FUSIÓN DE LOS ELEMENTOS NUEVOS Y MODIFICADOS RESPECTO A INDEX, AL IGUAL QUE
+ ; AQUELLOS QUE NO POSEAN DUPLICA, DE NOMBRE O COMPLETA, EN INDEX.
+;DOMINIO: LISTA DE ZONAS
+;RECORRIDO: LISTA DE ZONAS
+;RECURSION NATURAL, DEFINIDA EN "MAIN-BACK.TXT".
+;FUNCION CURRIFICADA
 
 (define add (lambda (L)
                (if (null? L)
@@ -55,6 +76,13 @@
                       (get_remote_repository Q))))))
 
 ;COMMIT
+;DESCRIPCION: CREA UNA LISTA DE ZONAS, AGREGANDO UN COMANDO "COMMIT" A LA LISTA,
+ ; Y COPIANDO LOS COMMITS DESDE "INDEX" A "LOCAL REPOSITORY", PARA LUEGO ELIMINARLOS DESDE
+ ; "INDEX".
+;DOMINIO: LISTA DE ZONAS
+;RECORRIDO: LISTA DE ZONAS
+;RECURSION NATURAL, DEFINIDA EN "MAIN-BACK.TXT".
+;FUNCION CURRIFICADA
 
 (define commit (lambda (MSG)
                  (lambda (Q)
@@ -68,6 +96,10 @@
                     (get_remote_repository Q)))))
 
 ;PUSH
+;DESCRIPCION: CREA UNA NUEVA LISTA DE ZONAS, AÑADIENDO UN COMANDO "PUSH" A LA LISTA DE COMANDOS ASOCIADA,
+ ; Y MODIFICANDO LA ZONA "REMOTE REPOSITORY" A UNA COPIA DE LOS ELEMENTOS EN "LOCAL REPOSITORY".
+;DOMINIO: LISTA DE ZONAS
+;RECORRIDO: LISTA DE ZONAS
 
 (define push (lambda (Q)
                (create_zone_list
@@ -80,6 +112,10 @@
                  (get_commit_list (get_local_repository Q))))))
 
 ;ZONAS->STRING
+;DESCRIPCION: CREA UN STRING REPRESENTATIVO DE LO CONTENIDO EN UNA LISTA DE ZONAS.
+;DOMINIO: LISTA DE ZONAS
+;RECORRIDO: STRING
+;RECURSION NATURAL, DEFINIDA EN "MAIN-BACK.TXT"
 
 (define zonas->string (lambda (Q)
                         (string-append "\n###LISTA DE COMANDOS UTILIZADOS###\n\n"
@@ -87,5 +123,4 @@
                                        (zone->string (get_workspace Q))
                                        (zone->string (get_index Q))
                                        (zone->string (get_local_repository Q))
-                                       (zone->string (get_remote_repository Q))
-                                       )))
+                                       (zone->string (get_remote_repository Q)))))

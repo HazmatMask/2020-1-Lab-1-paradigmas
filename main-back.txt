@@ -1,10 +1,13 @@
 #lang racket
-(require "tda-commit.rkt")
-(require "tda-zone.rkt")
+(require "tda-commit.txt")
+(require "tda-zone.txt")
 
-;PULL+ADD
-
-;DETERMINAR ARCHIVOS MODIFICADOS O NUEVOS
+;RECURSIVE_MODIFIED_COMMITS
+;DESCRIPCION: RECORRE DOS LISTAS, Y CREA UNA TERCERA, CON TODOS LOS COMMITS DE LA PRIMERA QUE NO ESTÉN EN LA SEGUNDA,
+ ; O AQUELLOS CUYO NOMBRE DE ARCHIVO COINCIDA, PERO NO ASÍ SU CONTENIDO.
+;DOMINIO: LISTAS DE COMMITS
+;RECORRIDO: LISTA DE COMMITS
+;RECURSION NATURAL
 
 (define recursive_modified_commits (lambda (L1 L2 L3 LF)
                                      (if (null? L1)
@@ -18,9 +21,19 @@
                                                       (recursive_modified_commits (cdr L1) L3 L3 (cons (car L1) LF))                                             
                                                       (recursive_modified_commits L1 (cdr L2) L3 LF)))))))
 
+;EXTRACT_MODIFIED_COMMITS
+;DESCRIPCION: POR MEDIO DE DOS LISTAS, INVOCA LA FUNCION "RECURSIVE_MODIFIED_COMMITS", CON LOS PARAMETROS REQUERIDOS PARA QUE
+ ; ESTA SEGUNDA PUEDA REALIZAR SU LABOR ESPERADA. UTILIZADA POSTERIORMENTE EN FUNCION "ADD"
+;DOMINIO: LISTAS DE COMMITS
+;RECORRIDO: LISTA DE COMMITS
+
 (define extract_modified_commits (lambda (L1 L2) (recursive_modified_commits L1 L2 L2 '())))
 
-;ELIMINAR ELEMENTOS MODIFICADOS
+;RECURSIVE_DELETE_MODIFIED_COMMITS
+;DESCRIPCION: RECORRE DOS LISTA, Y COMPARA SUS CONTENIDOS, CREANDO UNA TERCERA LISTA CON AQUELLOS ELEMENTOS QUE EXISTAN EN LA SEGUNDA,
+ ; SIN UN DUPLICADO DE NOMBRE EN LA PRIMERA
+;DOMINIO: LISTAS DE COMMITS
+;RECORRIDO: LISTA DE COMMITS
 
 (define recursive_delete_modified_commits (lambda (L1 L2 L3 LF)
                                             (if (null? L1)
@@ -31,9 +44,20 @@
                                                          (recursive_delete_modified_commits (cdr L1) L3 L3 LF)                                          
                                                          (recursive_delete_modified_commits L1 (cdr L2) L3 LF))))))
 
+;DELETE_MODIFIED_COMMITS
+;DESCRIPCION: POR MEDIO DE DOS LISTAS, INVOCA LA FUNCION "RECURSIVE_DELETE_MODIFIED_COMMITS", CON LOS PARAMETROS REQUERIDOS PARA QUE
+ ; ESTA SEGUNDA PUEDA REALIZAR SU LABOR ESPERADA.
+;DOMINIO: LISTAS DE COMMITS
+;RECORRIDO: LISTA DE COMMITS
+
 (define delete_modified_commits (lambda (L1 L2) (recursive_delete_modified_commits L1 L2 L2 '())))
 
-;DETERMINAR ELEMENTOS UNICOS
+;RECURSIVE_UNIQUE_COMMITS
+;DESCRIPCION: COMPARA LOS COMMITS DENTRO DE DOS LISTAS,Y DETERMINA AQUELLOS ELEMENTOS EN LA PRIMERA LISTA
+ ; QUE NO TIENEN UNA COPIA IDENTICA EN LA SEGUNDA.
+;DOMINIO: LISTAS DE COMMITS
+;RECORRIDO: LISTA DE COMMITS
+;RECURSION DE COLA
 
 (define recursive_unique_commits (lambda (L1 L2 L3)
                                  (if (null? L1)
@@ -44,19 +68,32 @@
                                              (recursive_unique_commits (cdr L1) L3 L3)
                                              (recursive_unique_commits L1 (cdr L2) L3))))))
 
+;EXTRACT_UNIQUE_COMMITS
+;DESCRIPCION: POR MEDIO DE DOS LISTAS, INVOCA LA FUNCION "RECURSIVE_UNIQUE_MODIFIED_COMMITS", CON LOS PARAMETROS REQUERIDOS PARA QUE
+ ; ESTA SEGUNDA PUEDA REALIZAR SU LABOR ESPERADA. UTILIZADA POSTERIORMENTE EN FUNCION "PULL".
+;DOMINIO: LISTAS DE COMMITS
+;RECORRIDO: LISTA DE COMMITS
+
 (define extract_unique_commits (lambda (L1 L2) (recursive_unique_commits L1 L2 L2)))
 
 
-;MEZCLAR LISTAS
+;MERGE_LISTS_COMMITS
+;DESCRIPCION: POR MEDIO DE DOS LISTAS, CREA UNA UNICA LISTA NUEVA, QUE CONTENGA LOS ELEMENTOS DE AMBAS.
+;DOMINIO: LISTAS DE COMMITS
+;RECORRIDO: LISTA DE COMMITS
+;RECURSION NATURAL
 
 (define merge_lists_commits (lambda (L1 LC)
                               (if (null? (cdr LC))
                                   (cons (car LC) L1)
                                   (merge_lists_commits (cons (car LC) L1) (cdr LC)))))
 
-(provide (all-defined-out))
-
-;AGREGAR MENSAJE A LISTA DE COMMITS
+;RECURSIVE_ADD_MESSAGE_TO_COMMIT_LIST
+;DESCRIPCION: POR MEDIO DE UNA LISTA AUXILIAR, MODIFICA EL MENSAJE DADO A CADA UNO DE LOS COMMITS DE UNA LISTA,
+ ; CREANDO UNA NUEVA LISTA CON ESTOS COMMITS.
+;DOMINIO: LISTAS DE COMMITS
+;RECORRIDO: LISTA DE COMMITS
+;RECURSION NATURAL.
 
 (define recursive_add_message_to_commit_list (lambda (MSG L LAUX)
                                                (if (null? L)
@@ -67,27 +104,45 @@
 
 (define add_message_to_commits_list (lambda (MSG L) (recursive_add_message_to_commit_list MSG L '())))
 
-;CREAR STRING DESDE COMMIT
+;COMMIT->STRING
+;DESCRIPCION: CREA UN STRING SIGNIFICATIVO CON EL CONTENIDO DE UN COMMIT ENTREGADO
+;DOMINIO: COMMIT
+;RECORRIDO: STRING
 
 (define commit->string (lambda (C)
                          (string-append "NOMBRE DE ARCHIVO: " (get_commit_filename C) "\nCREADO POR: " (get_commit_creator C)
                                         "\nFECHA DE CREACION: " (get_commit_date C) "\nMENSAJE ASOCIADO: " (get_commit_message C)
                                         "\n\nCONTENIDO DEL ARCHIVO:\n\n" (get_commit_content C) "\n\n- - - - - - - - -\n")))
 
-;CREAR STRING DESDE LISTA DE ZONA
+;LIST_OF_COMMITS->STRING
+;DESCRIPCION: CREA UN STRING SIGNIFICATIVO CON EL CONTENIDO DE UNA LISTA DE COMMITS
+;DOMINIO: LISTA DE COMMITS
+;RECORRIDO: STRING
+;RECURSION NATURAL
 
 (define list_of_commits->string (lambda (L S_L)
                                   (if (null? L)
                                       S_L
                                       (list_of_commits->string (cdr L) (string-append S_L (commit->string (car L)))))))
 
-;CREAR STRING DESDE ZONA
+;ZONE->STRING
+;DESCRIPCION: CREA UN STRING SIGNIFICATIVO CON EL CONTENIDO DE UNA ZONA
+;DOMINIO: ZONA
+;RECORRIDO: STRING
 
 (define zone->string (lambda (Z) (string-append "\n###" (get_zone_name Z) "###\n\n" (list_of_commits->string (get_commit_list Z) ""))))
 
-;CREAR STRING DESDE COMANDOS
+;LIST_OF_COMMANDS->STRING
+;DESCRIPCION: CREA UN STRING SIGNIFICATIVO CON EL CONTENIDO DE UNA LISTA DE COMANDOS
+;DOMINIO: LISTA DE COMANDOS
+;RECORRIDO: STRING
+;RECURSION NATURAL
 
 (define list_of_commands->string (lambda (K S_K)
                                   (if (null? K)
                                       (string-append S_K "\n- - - - - - - - -")
                                       (list_of_commands->string (cdr K) (string-append S_K (car K) "\n")))))
+
+;FUNCIONAMIENTO INTERNO ADD-ALL
+
+(provide (all-defined-out))
