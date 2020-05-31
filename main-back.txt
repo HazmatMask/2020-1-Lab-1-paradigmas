@@ -84,8 +84,8 @@
 ;RECURSION NATURAL
 
 (define merge_lists_commits (lambda (L1 LC)
-                              (if (null? (cdr LC))
-                                  (cons (car LC) L1)
+                              (if (null? LC)
+                                  L1
                                   (merge_lists_commits (cons (car LC) L1) (cdr LC)))))
 
 ;RECURSIVE_ADD_MESSAGE_TO_COMMIT_LIST
